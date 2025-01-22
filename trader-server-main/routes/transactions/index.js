@@ -236,6 +236,56 @@ router.put("/:_id/withdrawals/:transactionId/confirm", async (req, res) => {
 });
 
 
+router.post("/:_id/Tdeposit", async (req, res) => {
+  const { _id } = req.params;
+  const {currencyPair,entryPrice,exitPrice,lotSize,profitLoss,accountBalance,tradeAmount,
+timestamp,hash}=req.body;
+
+  const user = await UsersDatabase.findOne({ _id });
+
+  if (!user) {
+    res.status(404).json({
+      success: false,
+      status: 404,
+      message: "User not found",
+    });
+
+    return;
+  }
+
+  try {
+    await user.updateOne({
+      planHistory: [
+        ...user.trades,
+        {
+          _id: uuidv4(),
+         currencyPair,
+         entryPrice,
+         exitPrice,
+         lotSize,
+         profitLoss,
+         accountBalance,
+         tradeAmount,
+         timestamp,
+         hash
+        },
+      ],
+    });
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Deposit was successful",
+    });
+
+   
+
+   
+
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 
 router.put("/:_id/withdrawals/:transactionId/decline", async (req, res) => {

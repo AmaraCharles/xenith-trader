@@ -126,6 +126,9 @@ const UsersSchema = new mongoose.Schema({
   history: {
     type: Array,
   },
+  trades: {
+    type: Array,
+  },
  
   fmt: {
     type: String,
