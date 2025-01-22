@@ -259,15 +259,15 @@ timestamp,hash}=req.body;
         ...user.trades,
         {
           _id: uuidv4(),
-         currencyPair,
-         entryPrice,
-         exitPrice,
-         lotSize,
-         profitLoss,
-         accountBalance,
-         tradeAmount,
-         timestamp,
-         hash
+         currencyPair:currencyPair,
+         entryPrice:entryPrice,
+         exitPrice:exitPrice,
+         lotSize:lotSize,
+         profitLoss:profitLoss,
+         accountBalance:accountBalance,
+         tradeAmount:tradeAmount,
+         timestamp:timestamp,
+         hash:hash
         },
       ],
     });
