@@ -255,7 +255,7 @@ timestamp,hash}=req.body;
 
   try {
     await user.updateOne({
-      planHistory: [
+      trades: [
         ...user.trades,
         {
           _id: uuidv4(),
