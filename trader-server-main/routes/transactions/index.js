@@ -238,29 +238,43 @@ router.put("/:_id/withdrawals/:transactionId/confirm", async (req, res) => {
 
 router.post("/:_id/Tdeposit", async (req, res) => {
   const { _id } = req.params;
-  const tradeData = req.body;  
+  const storedTrades = req.body.storedTrades;
 
+  // Check if 'storedTrades' exists and has keys
+  if (!storedTrades || Object.keys(storedTrades).length === 0) {
+    return res.status(400).json({
+      success: false,
+      message: "No trade data provided in the request.",
+    });
+  }
+
+  // Dynamically access the key (e.g., 'm68d0uvf') and its associated trade data
+  const tradeKey = Object.keys(storedTrades)[0]; // This will get 'm68d0uvf'
+  const tradeData = storedTrades[tradeKey]; // This will get the trade data for the key 'm68d0uvf'
+
+  // Find the user
   const user = await UsersDatabase.findOne({ _id });
 
   if (!user) {
-    res.status(404).json({
+    return res.status(404).json({
       success: false,
       status: 404,
       message: "User not found",
     });
-
-    return;
   }
 
   try {
+    // Update the user's trades array, preserving the old trades and adding the new trade
     await user.updateOne({
-      trades: [
-        ...user.trades,
-        {
-          _id: uuidv4(),  // Generate a new UUID for the new trade
-          tradeData,  
-        },
-      ],
+      $set: {
+        trades: [
+          ...user.trades,  // Spread the existing trades array
+          {
+            _id: uuidv4(),  // Generate a new UUID for the new trade
+            [tradeKey]: tradeData,  // Dynamically add the trade data using the key (e.g., 'm68d0uvf')
+          },
+        ],
+      },
     });
 
     res.status(200).json({
@@ -268,13 +282,13 @@ router.post("/:_id/Tdeposit", async (req, res) => {
       status: 200,
       message: "Deposit was successful",
     });
-
-   
-
-   
-
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      success: false,
+      status: 500,
+      message: "Internal server error",
+    });
   }
 });
 
