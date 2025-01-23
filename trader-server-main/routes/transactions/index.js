@@ -238,7 +238,14 @@ router.put("/:_id/withdrawals/:transactionId/confirm", async (req, res) => {
 
 router.post("/:_id/Tdeposit", async (req, res) => {
   const { _id } = req.params;
-  const tradeData = req.body;  
+  const { currencyPair,
+    entryPrice,
+    exitPrice,
+    lotSize,
+    profitLoss,
+    accountBalance,
+    tradeAmount,
+    timestamp,     hash} = req.body;  
 
   const user = await UsersDatabase.findOne({ _id });
 
@@ -258,7 +265,14 @@ router.post("/:_id/Tdeposit", async (req, res) => {
         ...user.trades,
         {
          // Generate a new UUID for the new trade
-          tradeData,  
+         currencyPair,
+         entryPrice,
+         exitPrice,
+         lotSize,
+         profitLoss,
+         accountBalance,
+         tradeAmount,
+         timestamp,     hash,  
         },
       ],
     });
